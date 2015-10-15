@@ -1,5 +1,5 @@
 {
-  "name": "My Stats",
+  "name": "mystats",
   "version": "0.0.1",
   "scripts": {
     "start": "node ./app"
