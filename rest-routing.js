@@ -4,11 +4,6 @@ var loadService = require('./load-service.js');
 
 var router = express.Router();
 
-router.use(function timeLog(req, res, next) {
-  console.log('Time: ', Date.now());
-  next();
-});
-
 router.get('/avg', function(req, res) {
   Promise.denodeify(loadService.getTotalAverage)()
     .then(

@@ -1,0 +1,21 @@
+{
+  "name": "mystats",
+  "description": "my stats project",
+  "main": "app",
+  "authors": [
+    "Thomas Selber"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/selbert/mystats",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.4.7"
+  }
+}

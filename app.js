@@ -4,11 +4,11 @@ var rest = require('./rest-routing.js');
 
 var app = express();
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
-});
+app.use('/api', rest);
 
-app.use('/rest', rest);
+app.get('/*', function (req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
 
 var server = app.listen(3000, function () {
   var host = server.address().address;

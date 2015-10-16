@@ -30,6 +30,11 @@ var updateCache = function(queryName, data) {
     queryCache.data = data;
 }
 
+var getQuery = function(queryName) {
+    var queryData = dataMap[queryName];
+    return queryData.query;
+}
+
 var getSingleResultCached = function(queryName) {
     return new Promise(function(resolve, reject) {
         var data = getCachedData(queryName);
@@ -63,8 +68,7 @@ var getMultiResultCached = function(queryName) {
 var getSingleResult = function(queryName) {
     return new Promise(function(resolve, reject) {
         var db = new sqlite3.Database(file);
-        var query = queryData.query;
-        console.log(query);
+        var query = getQuery(queryName);
         db.serialize(function() {
           db.get(query, function(err, row) {
             if (err) reject(err);
@@ -78,14 +82,16 @@ var getSingleResult = function(queryName) {
 var getMultiResult = function(queryName) {
     return new Promise(function(resolve, reject) {
         var db = new sqlite3.Database(file);
-        var query = queryData.query;
+        var query = getQuery(queryName);
         db.serialize(function() {
-         db.each(query, function(err, row) {
-             rows.push(row);
-           }, function(err, count) {
-              if (err) reject(err);
-              else resolve(row);
-           });
+            var rows = [];
+            db.each(query, function(err, row) {
+                if (err) reject(err);
+                else rows.push(row);
+            }, function(err, count) {
+                if (err) reject(err);
+                else resolve(rows);
+            });
         });
         db.close();
     })
