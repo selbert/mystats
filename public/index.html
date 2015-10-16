@@ -7,7 +7,13 @@
 </head>
 <body ng-app="statsApp">
     <h1>My Stats!</h1>
-    <div ng-controller="firstGraphCtrl">
+    <div ng-controller="avgDayGraphCtrl">
+        <linechart data="data" options="options" mode="" width="" height=""></linechart>
+    </div>
+    <div ng-controller="avgHourOfDayGraphCtrl">
+        <linechart data="data" options="options" mode="" width="" height=""></linechart>
+    </div>
+    <div ng-controller="avgDayOfWeekGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
 </body>

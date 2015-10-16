@@ -61,43 +61,74 @@ statsApp
     .factory('loadOptionsService', ['urlService', '$http', function(urlService, $http){
         var service = {};
 
-        service.avgHourOfDay = {};
+        service.avgHourOfDay = {
+               axes: {
+                   x: {key: 'hod', type: 'linear'},
+                   y: {type: 'linear'}
+               },
+               margin: {
+                   left: 100
+               },
+               series: [
+                   {y: 'avg', color: 'steelblue', thickness: '2px', label: 'Average Watt consumption per day'}
+               ],
+               lineMode: 'linear'
+           };
 
-        service.avgDayOfWeek = {};
+        service.avgDayOfWeek = {
+           axes: {
+               x: {key: 'dow', type: 'linear', tick:1},
+               y: {type: 'linear'}
+           },
+           margin: {
+               left: 100
+           },
+           series: [
+               {y: 'avg', color: 'steelblue', thickness: '2px', label: 'Average Watt consumption per day'}
+           ],
+           lineMode: 'columns'
+       };
 
         service.avgDay = {
             axes: {
                 x: {key: 'day', type: 'date'},
-                y: {type: 'linear', min: 0}
+                y: {type: 'linear'}
             },
             margin: {
                 left: 100
             },
             series: [
-                {y: 'avg', color: 'steelblue', thickness: '2px', type: 'area', striped: true, label: 'Average Watt consumption per day'}
+                {y: 'avg', color: 'steelblue', thickness: '2px', label: 'Average Watt consumption per day'}
             ],
             lineMode: 'linear'
         };
 
         return service;
     }])
-    .controller('firstGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
-        var graphs = {
-            avgDay: {data: [], options: loadOptionsService.avgDay},
-            avgHourOfDay: {data: [], options: loadOptionsService.avgHourOfDay},
-            avgDayOfWeek: {data: [], options: loadOptionsService.avgDayOfWeek}
-        };
+    .controller('avgDayGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
 
         loadDataService.avgDay(function(err, data) {
-            if (data)
-                $scope.data = data;
+            if (data) $scope.data = data;
         });
-        $scope.options = loadOptionsService.avgDay;
-        $scope.reloadData = loadData;
 
-        var loadData = function(dataName) {
-            loadDataService[dataName](function(err, data) {
-                if (data) $scope.graphs[dataName].data = data;
-            });
-        }
+        $scope.options = loadOptionsService.avgDay;
+
+    }])
+    .controller('avgDayOfWeekGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
+
+        loadDataService.avgDayOfWeek(function(err, data) {
+            if (data) $scope.data = data;
+        });
+
+        $scope.options = loadOptionsService.avgDayOfWeek;
+
+    }])
+    .controller('avgHourOfDayGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
+
+        loadDataService.avgHourOfDay(function(err, data) {
+            if (data) $scope.data = data;
+        });
+
+        $scope.options = loadOptionsService.avgHourOfDay;
+
     }]);
