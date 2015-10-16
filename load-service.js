@@ -8,10 +8,10 @@ var exists = fs.existsSync(file);
 
 var MILLIS_IN_MINUTE = 60*1000;
 var dataMap = {
-    totalAverage: {query:"SELECT AVG(avg) AS avg FROM load", cache:{time: 0, data: 0}},
-    averagePerDayOfWeek: {query:"SELECT strftime('%w', time) as dow, AVG(avg) as avg FROM load GROUP BY dow", cache:{time: 0, data: []}},
-    averagePerHourOfDay: {query:"SELECT strftime('%H', time) as hod, AVG(avg) as avg FROM load GROUP BY hod", cache:{time: 0, data: []}},
-    averagePerDay: {query:"SELECT date(time) as day, AVG(avg) as avg FROM load GROUP BY day",cache:{time: 0, data: []}}
+    totalAverage: {query:"SELECT AVG(avg)/100*540 AS avg FROM load", cache:{time: 0, data: 0}},
+    averagePerDayOfWeek: {query:"SELECT strftime('%w', time) as dow, AVG(avg)/100*540 as avg FROM load GROUP BY dow", cache:{time: 0, data: []}},
+    averagePerHourOfDay: {query:"SELECT strftime('%H', time) as hod, AVG(avg)/100*540 as avg FROM load GROUP BY hod", cache:{time: 0, data: []}},
+    averagePerDay: {query:"SELECT date(time) as day, AVG(avg)/100*540 as avg FROM load GROUP BY day",cache:{time: 0, data: []}}
 };
 
 var getCachedData = function(queryName) {
