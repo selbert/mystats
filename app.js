@@ -6,6 +6,14 @@ var app = express();
 
 app.use('/api', rest);
 
+app.get('/js/:jsFile', function (req, res) {
+    res.sendFile(__dirname + '/public/javascript/'+req.params.jsFile);
+});
+
+app.get('/css/:cssFile', function (req, res) {
+    res.sendFile(__dirname + '/public/stylesheets/'+req.params.cssFile);
+});
+
 app.get('/*', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });

@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Thomas' Stats</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
-<body>
+<body ng-app="statsApp">
     <h1>My Stats!</h1>
+    <div ng-controller="firstGraphCtrl">
+        <linechart data="data" options="options" mode="" width="" height=""></linechart>
+    </div>
 </body>
+<script src="js/main.js"></script>
 </html>
