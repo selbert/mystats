@@ -82,6 +82,9 @@ statsApp
                axes: {
                    x: { key: 'hod' }
                },
+            margin: {
+                left: 100
+            },
                series: [
                    { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per hour of day', type: "column" }
                ]
@@ -91,6 +94,9 @@ statsApp
            axes: {
                  x: { key: 'dow', type: 'linear' }
                },
+            margin: {
+                left: 100
+            },
            series: [
                { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per day of week', type: "column" }
            ]
@@ -100,6 +106,9 @@ statsApp
             axes: {
                 x: { key: 'date', type: 'date' }
             },
+            margin: {
+                left: 100
+            },
             series: [
                 { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per day', type: "column" }
             ]
@@ -108,6 +117,9 @@ statsApp
         this.load = {
             axes: {
                 x: { key: 'date', type: 'linear' }
+            },
+            margin: {
+                left: 100
             },
             series: [
                 { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt' },
