@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="statsApp">
 <head>
     <meta charset="UTF-8">
     <title>Thomas' Stats</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!--<link rel="stylesheet" type="text/css" href="css/main.css">-->
 </head>
-<body ng-app="statsApp">
+<body>
     <h1>My Stats!</h1>
     <div ng-controller="avgDayGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
@@ -16,6 +16,9 @@
     <div ng-controller="avgDayOfWeekGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
+    <div ng-controller="loadGraphCtrl">
+        <linechart data="data" options="options" mode="" width="" height=""></linechart>
+    </div>
+    <script src="js/main.js"></script>
 </body>
-<script src="js/main.js"></script>
 </html>

@@ -1,134 +1,152 @@
 var statsApp = angular.module('statsApp', ['n3-line-chart']);
 
 statsApp
-    .factory('urlService', function() {
-        var service = {};
+    .service('urlService', function() {
         var apiBaseUrl = '/api'
 
-        service.avgUrl = apiBaseUrl + '/avg';
-        service.avgHourOfDayUrl = service.avgUrl + '/hourOfDay';
-        service.avgDayOfWeekUrl = service.avgUrl + '/dayOfWeek';
-        service.avgDayUrl = service.avgUrl + '/day';
 
-        return service;
+        this.loadBaseUrl = apiBaseUrl + '/loads';
+        this.loadUrl = this.loadBaseUrl + '/50';
+
+        this.avgUrl = apiBaseUrl + '/avg';
+        this.avgHourOfDayUrl = this.avgUrl + '/hourOfDay';
+        this.avgDayOfWeekUrl = this.avgUrl + '/dayOfWeek';
+        this.avgDayUrl = this.avgUrl + '/day';
     })
-    .factory('loadDataService', ['urlService', '$http', function(urlService, $http){
-        var service = {};
-        var stringToDate = function(data) {
-            data.forEach(function(entry) {
-                if (entry.day) entry.day = new Date(entry.day);
-            })
-        }
-        service.avg = function(callback) {
-            $http.get(urlService.avgUrl)
-                .then(function(resp) {
-                    callback(null, resp.data);
-                }, function(error) {
-                    callback(error, null);
-                });
+    .service('loadDataService', ['urlService', '$http', '$q', function(urlService, $http, $q){
+
+        var getPromise = function(url, parseFn) {
+            var deferred = $q.defer();
+            $http.get(url)
+                .then(
+                   function(resp) {
+                      var data = resp.data.map(parseFn);
+                      deferred.resolve(data);
+                    },
+                   function(resp) { deferred.reject(resp); });
+            return deferred.promise;
         };
 
-        service.avgHourOfDay = function(callback) {
-            $http.get(urlService.avgHourOfDayUrl)
-                .then(function(resp) {
-                    callback(null, resp.data);
-                },function(error) {
-                    callback(error, null);
-                });
+       this.load = function() {
+            var parseObject = function(element) {
+                console.log(element);
+                return {
+                    date: new Date(element.date),
+                    avg: parseFloat(element.avg),
+                    min: parseFloat(element.min),
+                    max: parseFloat(element.max)
+                }
+            };
+            return getPromise(urlService.loadUrl, parseObject);
         };
 
-        service.avgDayOfWeek = function(callback) {
-            $http.get(urlService.avgDayOfWeekUrl)
-                .then(function(resp) {
-                    callback(null, resp.data);
-                },function(error) {
-                    callback(error, null);
-                });
+        this.avgHourOfDay = function(callback) {
+            var parseObject = function(element) {
+                    return {
+                        hod: parseInt(element.hod),
+                        avg: parseFloat(element.avg)
+                    }
+                };
+            return getPromise(urlService.avgHourOfDayUrl, parseObject);
+        };
+        this.avg = function(callback) {
+            var parseObject = function(element) {
+                    return element;
+                };
+            return getPromise(urlService.avgUrl, parseObject);
         };
 
-        service.avgDay = function(callback) {
-            $http.get(urlService.avgDayUrl)
-                .then(function(resp) {
-                    stringToDate(resp.data);
-                    callback(null, resp.data);
-                },function(error) {
-                    callback(error, null);
-                });
+        this.avgDayOfWeek = function(callback) {
+            var parseObject = function(element) {
+                    return {
+                        dow: parseInt(element.dow),
+                        avg: parseFloat(element.avg)
+                    }
+                };
+            return getPromise(urlService.avgDayOfWeekUrl, parseObject);
         };
 
-        return service;
+        this.avgDay = function(callback) {
+            var parseObject = function(element) {
+                    return {
+                        date: new Date(element.date),
+                        avg: parseFloat(element.avg)
+                    }
+                };
+            return getPromise(urlService.avgDayUrl, parseObject);
+        };
     }])
-    .factory('loadOptionsService', ['urlService', '$http', function(urlService, $http){
-        var service = {};
-
-        service.avgHourOfDay = {
+    .service('loadOptionsService', function(){
+        this.avgHourOfDay = {
                axes: {
-                   x: {key: 'hod', type: 'linear'},
-                   y: {type: 'linear'}
-               },
-               margin: {
-                   left: 100
+                   x: { key: 'hod' }
                },
                series: [
-                   {y: 'avg', color: 'steelblue', thickness: '2px', label: 'Average Watt consumption per day'}
-               ],
-               lineMode: 'linear'
+                   { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per hour of day', type: "column" }
+               ]
            };
 
-        service.avgDayOfWeek = {
+        this.avgDayOfWeek = {
            axes: {
-               x: {key: 'dow', type: 'linear', tick:1},
-               y: {type: 'linear'}
-           },
-           margin: {
-               left: 100
-           },
+                 x: { key: 'dow', type: 'linear' }
+               },
            series: [
-               {y: 'avg', color: 'steelblue', thickness: '2px', label: 'Average Watt consumption per day'}
-           ],
-           lineMode: 'columns'
+               { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per day of week', type: "column" }
+           ]
        };
 
-        service.avgDay = {
+        this.avgDay = {
             axes: {
-                x: {key: 'day', type: 'date'},
-                y: {type: 'linear'}
-            },
-            margin: {
-                left: 100
+                x: { key: 'date', type: 'date' }
             },
             series: [
-                {y: 'avg', color: 'steelblue', thickness: '2px', label: 'Average Watt consumption per day'}
-            ],
-            lineMode: 'linear'
+                { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per day', type: "column" }
+            ]
         };
 
-        return service;
-    }])
+        this.load = {
+            axes: {
+                x: { key: 'date', type: 'date' }
+            },
+            series: [
+                { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt', type: "column" },
+                { y: 'max', color: 'red', thickness: '2px', label: 'Min Watt', type: "column" },
+                { y: 'min', color: 'green', thickness: '2px', label: 'Min Watt', type: "column" }
+            ]
+        };
+    })
+    .controller('loadGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
+            $scope.options = loadOptionsService.load;
+            $scope.data = [];
+            loadDataService.load()
+                .then(function(data) {
+                    $scope.data = data;
+                });
+
+        }])
+    .controller('avgHourOfDayGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
+           $scope.options = loadOptionsService.avgHourOfDay;
+           $scope.data = [];
+           loadDataService.avgHourOfDay()
+                .then(function(data) {
+                    if (data) $scope.data = data;
+                 });
+
+
+       }])
     .controller('avgDayGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
-
-        loadDataService.avgDay(function(err, data) {
-            if (data) $scope.data = data;
-        });
-
         $scope.options = loadOptionsService.avgDay;
-
+        $scope.data = [];
+        loadDataService.avgDay()
+           .then(function(data) {
+                if (data) $scope.data = data;
+            });
     }])
     .controller('avgDayOfWeekGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
-
-        loadDataService.avgDayOfWeek(function(err, data) {
-            if (data) $scope.data = data;
-        });
-
         $scope.options = loadOptionsService.avgDayOfWeek;
-
-    }])
-    .controller('avgHourOfDayGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
-
-        loadDataService.avgHourOfDay(function(err, data) {
-            if (data) $scope.data = data;
-        });
-
-        $scope.options = loadOptionsService.avgHourOfDay;
-
-    }]);
+        $scope.data = [];
+        loadDataService.avgDayOfWeek()
+            .then(function(data) {
+               if (data) $scope.data = data;
+            });
+        }]);
