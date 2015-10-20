@@ -6,7 +6,7 @@ statsApp
 
 
         this.loadBaseUrl = apiBaseUrl + '/loads';
-        this.loadUrl = this.loadBaseUrl + '/50';
+        this.loadUrl = this.loadBaseUrl + '/25';
 
         this.avgUrl = apiBaseUrl + '/avg';
         this.avgHourOfDayUrl = this.avgUrl + '/hourOfDay';
@@ -21,6 +21,7 @@ statsApp
                 .then(
                    function(resp) {
                       var data = resp.data.map(parseFn);
+                      console.log(data);
                       deferred.resolve(data);
                     },
                    function(resp) { deferred.reject(resp); });
@@ -28,14 +29,14 @@ statsApp
         };
 
        this.load = function() {
-            var parseObject = function(element) {
-                console.log(element);
-                return {
-                    date: new Date(element.date),
+            var parseObject = function(element,i) {
+                var newel = {
+                    date: parseInt(i-25),
                     avg: parseFloat(element.avg),
                     min: parseFloat(element.min),
                     max: parseFloat(element.max)
-                }
+                };
+                return newel;
             };
             return getPromise(urlService.loadUrl, parseObject);
         };
@@ -106,12 +107,12 @@ statsApp
 
         this.load = {
             axes: {
-                x: { key: 'date', type: 'date' }
+                x: { key: 'date', type: 'linear' }
             },
             series: [
-                { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt', type: "column" },
-                { y: 'max', color: 'red', thickness: '2px', label: 'Min Watt', type: "column" },
-                { y: 'min', color: 'green', thickness: '2px', label: 'Min Watt', type: "column" }
+                { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt' },
+                { y: 'max', color: 'red', thickness: '1px', label: 'Min Watt' },
+                { y: 'min', color: 'green', thickness: '1px', label: 'Min Watt' }
             ]
         };
     })
