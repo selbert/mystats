@@ -22,4 +22,6 @@ gulp.task('default', function() {
     .pipe(gulp.dest('public/stylesheets/'));
 });
 
-gulp.watch('client/*.*', ['default']);
+gulp.task('watch', function() {
+    gulp.watch('client/*.*', ['default']);
+});
