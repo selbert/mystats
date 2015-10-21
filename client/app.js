@@ -198,13 +198,18 @@ statsApp
 
         var convertConsumption = function(consumption) {
             var value = parseFloat(consumption);
+            var unit = "Wh";
             if (isNaN(value)) value = 0.0;
 
             if (value >= 1000) {
-                return (value/1000.0).toFixed(2) + " KWh";
-            } else {
-                return value.toFixed(2) + " Wh"
+                value = value/1000.0;
+                unit = "kWh";
             }
+            if (value >= 1000) {
+                 value = value/1000.0;
+                 unit = "MWh";
+             }
+             return value.toFixed(3) + " " + unit;
         }
 
         loadDataService.avg()
