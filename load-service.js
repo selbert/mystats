@@ -17,7 +17,7 @@ var dataMap = {
     monthConsumption: {query:"SELECT AVG(avg)/100*540*(strftime('%s','now','localtime') - strftime('%s',MIN(time)))/60/60 as monthConsumption FROM load WHERE date(time) >= date('now','localtime','start of month','localtime')",cache:{time: 0, data: []}},
     weekConsumption: {query:"SELECT AVG(avg)/100*540*(strftime('%s','now','localtime') - strftime('%s',MIN(time)))/60/60 as weekConsumption FROM load WHERE strftime('%Y-%W',time) = strftime('%Y-%W','now','localtime')",cache:{time: 0, data: []}},
     dayConsumption: {query:"SELECT AVG(avg)/100*540*(strftime('%s','now','localtime') - strftime('%s',MIN(time)))/60/60 as dayConsumption FROM load WHERE date(time) = date('now','localtime')",cache:{time: 0, data: []}},
-    lastLoads: {query:"SELECT strftime('%s', time,'localtime') as date, ROUND(avg/100*540,2) as avg, ROUND(max/100*540,2) as max, ROUND(min/100*540,2) as min FROM load ORDER BY id DESC LIMIT ?",cache:{time: 0, data: []}}
+    lastLoads: {query:"SELECT strftime('%s', time) as date, ROUND(avg/100*540,2) as avg, ROUND(max/100*540,2) as max, ROUND(min/100*540,2) as min FROM load ORDER BY id DESC LIMIT ?",cache:{time: 0, data: []}}
 };
 
 var getCachedData = function(queryName) {
