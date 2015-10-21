@@ -7,6 +7,9 @@
 </head>
 <body>
     <h1>My Stats!</h1>
+    <div ng-controller="loadGraphCtrl">
+        <linechart data="data" options="options" mode="" width="" height=""></linechart>
+    </div>
     <div ng-controller="avgDayGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
@@ -14,9 +17,6 @@
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
     <div ng-controller="avgDayOfWeekGraphCtrl">
-        <linechart data="data" options="options" mode="" width="" height=""></linechart>
-    </div>
-    <div ng-controller="loadGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
     <script src="js/main.js"></script>

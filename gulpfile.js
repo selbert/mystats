@@ -12,7 +12,7 @@ gulp.task('default', function() {
         'client/*.js'])
     .pipe(sourcemaps.init())
     .pipe(concat('main.js'))
-    //.pipe(uglify())
+    .pipe(uglify())
     .pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('public/javascript/'));
 
