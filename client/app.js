@@ -5,6 +5,8 @@ statsApp
         var apiBaseUrl = '/api'
 
 
+        this.totalBaseUrl = apiBaseUrl + '/total';
+
         this.loadBaseUrl = apiBaseUrl + '/loads';
         this.loadUrl = this.loadBaseUrl + '/60';
 
@@ -21,7 +23,6 @@ statsApp
                 .then(
                    function(resp) {
                       var data = parseFn(resp.data);
-                      console.log(data);
                       deferred.resolve(data);
                     },
                    function(resp) { deferred.reject(resp); });
@@ -56,9 +57,16 @@ statsApp
         };
         this.avg = function(callback) {
             var parseObject = function(data) {
-                return data;
+                return data.avg;
             };
             return getPromise(urlService.avgUrl, parseObject);
+        };
+
+        this.total = function(callback) {
+            var parseObject = function(data) {
+                return data;
+            };
+            return getPromise(urlService.totalBaseUrl, parseObject);
         };
 
         this.avgDayOfWeek = function(callback) {
@@ -184,8 +192,32 @@ statsApp
         }])
     .controller('mainCtrl', ['loadDataService', '$scope', function(loadDataService, $scope) {
         $scope.totalAverage = 'loading...';
+        $scope.totalConsumption = 'loading...';
+        $scope.firstMeasure = 'loading...';
+        $scope.yearConsumption = 'loading...';
+
+        var convertConsumption = function(consumption) {
+            var value = parseFloat(consumption);
+            if (isNaN(value)) value = 0.0;
+
+            if (value >= 1000) {
+                return (value/1000.0).toFixed(2) + " KWh";
+            } else {
+                return value.toFixed(2) + " Wh"
+            }
+        }
+
         loadDataService.avg()
             .then(function(data) {
                 $scope.totalAverage = data;
+            });
+        loadDataService.total()
+            .then(function(data) {
+                $scope.totalConsumption = convertConsumption(data.totalConsumption);
+                $scope.yearConsumption = convertConsumption(data.yearConsumption);
+                $scope.monthConsumption = convertConsumption(data.monthConsumption);
+                $scope.weekConsumption = convertConsumption(data.weekConsumption);
+                $scope.dayConsumption = convertConsumption(data.dayConsumption);
+                $scope.firstMeasure = data.firstMeasure;
             });
     }]);

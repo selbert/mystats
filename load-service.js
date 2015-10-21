@@ -12,6 +12,11 @@ var dataMap = {
     averagePerDayOfWeek: {query:"SELECT strftime('%w', time) as dow, ROUND(AVG(avg)/100*540,2) as avg FROM load GROUP BY dow", cache:{time: 0, data: []}},
     averagePerHourOfDay: {query:"SELECT strftime('%H', time) as hod, ROUND(AVG(avg)/100*540,2) as avg FROM load GROUP BY hod", cache:{time: 0, data: []}},
     averagePerDay: {query:"SELECT date(time) as date, ROUND(AVG(avg)/100*540,2) as avg FROM load WHERE date(time) > date('now','-1 month') GROUP BY date",cache:{time: 0, data: []}},
+    totalConsumption: {query:"SELECT MIN(time) as firstMeasure, MAX(time) as lastMeasure, AVG(avg)*COUNT(*)/60 as totalConsumption FROM load",cache:{time: 0, data: []}},
+    yearConsumption: {query:"SELECT AVG(avg)*COUNT(*)/60 as yearConsumption FROM load WHERE date(time) > date('now','start of year')",cache:{time: 0, data: []}},
+    monthConsumption: {query:"SELECT AVG(avg)*COUNT(*)/60 as monthConsumption FROM load WHERE date(time) > date('now','start of month')",cache:{time: 0, data: []}},
+    weekConsumption: {query:"SELECT AVG(avg)*COUNT(*)/60 as weekConsumption FROM load WHERE strftime('%Y-%W',time) = strftime('%Y-%W','now')",cache:{time: 0, data: []}},
+    dayConsumption: {query:"SELECT AVG(avg)*COUNT(*)/60 as dayConsumption FROM load WHERE date(time) = date('now')",cache:{time: 0, data: []}},
     lastLoads: {query:"SELECT strftime('%s', time) as date, ROUND(avg/100*540,2) as avg, ROUND(max/100*540,2) as max, ROUND(min/100*540,2) as min FROM load ORDER BY id DESC LIMIT ?",cache:{time: 0, data: []}}
 };
 
@@ -98,6 +103,26 @@ exports.getTotalAverage = function() {
     return getSingleResultCached('totalAverage');
 }
 
+exports.getTotalConsumption = function() {
+    return getSingleResultCached('totalConsumption');
+}
+
+exports.getYearConsumption = function() {
+    return getSingleResultCached('yearConsumption');
+}
+
+exports.getMonthConsumption = function() {
+    return getSingleResultCached('monthConsumption');
+}
+
+exports.getWeekConsumption = function() {
+    return getSingleResultCached('weekConsumption');
+}
+
+exports.getDayConsumption = function() {
+    return getSingleResultCached('dayConsumption');
+}
+
 exports.getAveragePerDayOfWeek = function() {
     return getMultiResultCached('averagePerDayOfWeek');
 }
@@ -113,4 +138,3 @@ exports.getAveragePerDay = function() {
 exports.getLastLoads = function(amount) {
     return getMultiResultCached('lastLoads', [ amount ]);
 }
-

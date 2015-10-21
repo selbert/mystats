@@ -1,21 +1,41 @@
 var express = require('express');
-var Promise = require('promise');
 var loadService = require('./load-service.js');
+var extend = require('extend');
+var Promise = require('promise');
 
 var router = express.Router();
 
+router.get('/total', function(req, res) {
+  var response = {};
+  Promise.all([
+      loadService.getTotalConsumption(),
+      loadService.getMonthConsumption(),
+      loadService.getWeekConsumption(),
+      loadService.getDayConsumption(),
+      loadService.getYearConsumption()])
+    .then(
+      function(rows) {
+        rows.forEach(function(row) {
+          extend(response, row);
+        });
+        res.json(response);
+      },
+      function(err) {
+        res.json({error:err})});
+});
+
 router.get('/avg', function(req, res) {
-  Promise.denodeify(loadService.getTotalAverage)()
+  loadService.getTotalAverage()
     .then(
       function(row) {
-        res.json(row.avg)
+        res.json(row)
       },
       function(err) {
         res.json({error:err})});
 });
 
 router.get('/avg/day', function(req, res) {
-  Promise.denodeify(loadService.getAveragePerDay)()
+  loadService.getAveragePerDay()
     .then(
       function(rows) {
         res.json(rows)
@@ -25,7 +45,7 @@ router.get('/avg/day', function(req, res) {
 });
 
 router.get('/avg/dayOfWeek', function(req, res) {
-  Promise.denodeify(loadService.getAveragePerDayOfWeek)()
+  loadService.getAveragePerDayOfWeek()
     .then(
       function(rows) {
         res.json(rows)
@@ -35,7 +55,7 @@ router.get('/avg/dayOfWeek', function(req, res) {
 });
 
 router.get('/avg/hourOfDay', function(req, res) {
-  Promise.denodeify(loadService.getAveragePerHourOfDay)()
+  loadService.getAveragePerHourOfDay()
     .then(
       function(rows) {
         res.json(rows)
@@ -47,7 +67,7 @@ router.get('/avg/hourOfDay', function(req, res) {
 router.get('/loads/:amount', function(req, res) {
   var amount = req.params.amount;
   if (!amount || isNaN(amount)) amount = 1000;
-  Promise.denodeify(loadService.getLastLoads)(amount)
+  loadService.getLastLoads(amount)
     .then(
       function(rows) {
         res.json(rows)
