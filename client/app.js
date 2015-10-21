@@ -214,7 +214,7 @@ statsApp
 
         loadDataService.avg()
             .then(function(data) {
-                $scope.totalAverage = data;
+                $scope.totalAverage = data.toFixed(3);
             });
         loadDataService.total()
             .then(function(data) {
@@ -223,6 +223,6 @@ statsApp
                 $scope.monthConsumption = convertConsumption(data.monthConsumption);
                 $scope.weekConsumption = convertConsumption(data.weekConsumption);
                 $scope.dayConsumption = convertConsumption(data.dayConsumption);
-                $scope.firstMeasure = parseFloat(data.firstMeasure).toFixed(3);
+                $scope.firstMeasure = data.firstMeasure;
             });
     }]);
