@@ -223,6 +223,6 @@ statsApp
                 $scope.monthConsumption = convertConsumption(data.monthConsumption);
                 $scope.weekConsumption = convertConsumption(data.weekConsumption);
                 $scope.dayConsumption = convertConsumption(data.dayConsumption);
-                $scope.firstMeasure = data.firstMeasure.toFixed(3);
+                $scope.firstMeasure = parseFloat(data.firstMeasure).toFixed(3);
             });
     }]);
