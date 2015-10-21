@@ -31,7 +31,7 @@ statsApp
 
        this.load = function() {
             var parseObject = function(data) {
-                return data.map(function(element,i) {
+                return data.reverse().map(function(element,i) {
                     var newel = {
                         date: parseInt(i-59),
                         avg: parseFloat(element.avg),
