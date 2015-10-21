@@ -33,7 +33,7 @@ statsApp
             var parseObject = function(data) {
                 return data.reverse().map(function(element,i) {
                     var newel = {
-                        date: parseInt(i-59),
+                        date: new Date(element.date*1000),
                         avg: parseFloat(element.avg),
                         min: parseFloat(element.min),
                         max: parseFloat(element.max)
@@ -140,7 +140,7 @@ statsApp
 
         this.load = {
             axes: {
-                x: { key: 'date', type: 'linear' }
+                x: { key: 'date', type: 'date' }
             },
             margin: {
                 left: 100
