@@ -149,8 +149,8 @@ statsApp
             tension: 1,
             lineMode: 'basis',
             series: [
-                { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt', tension: 1 },
-                { y: 'max', color: 'red', thickness: '1px', label: 'Min Watt' },
+                { y: 'avg', color: 'blue', thickness: '2px', label: 'Avg Watt', tension: 1 },
+                { y: 'max', color: 'red', thickness: '1px', label: 'Max Watt' },
                 { y: 'min', color: 'green', thickness: '1px', label: 'Min Watt' }
             ]
         };
