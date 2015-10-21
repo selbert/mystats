@@ -6,7 +6,7 @@ statsApp
 
 
         this.loadBaseUrl = apiBaseUrl + '/loads';
-        this.loadUrl = this.loadBaseUrl + '/25';
+        this.loadUrl = this.loadBaseUrl + '/60';
 
         this.avgUrl = apiBaseUrl + '/avg';
         this.avgHourOfDayUrl = this.avgUrl + '/hourOfDay';
@@ -31,7 +31,7 @@ statsApp
        this.load = function() {
             var parseObject = function(element,i) {
                 var newel = {
-                    date: parseInt(i-25),
+                    date: parseInt(i-59),
                     avg: parseFloat(element.avg),
                     min: parseFloat(element.min),
                     max: parseFloat(element.max)
@@ -89,10 +89,15 @@ statsApp
                    { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per hour of day', type: "column" }
                ]
            };
-
+        var daysOfWeek = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var dayOfWeek = function(number) {
+            var i = parseInt(number);
+            if (isNaN(i) || i < 0 || i > 6) return "";
+            else return daysOfWeek[i];
+        };
         this.avgDayOfWeek = {
            axes: {
-                 x: { key: 'dow', type: 'linear' }
+                 x: { key: 'dow', type: 'linear', ticksFormatter: dayOfWeek }
                },
             margin: {
                 left: 100
@@ -109,8 +114,11 @@ statsApp
             margin: {
                 left: 100
             },
+            drawDots: false,
+            tension: 1,
+            lineMode: 'basis',
             series: [
-                { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per day', type: "column" }
+                { y: 'avg', color: 'steelblue', thickness: '2px', label: 'Avg Watt per day' }
             ]
         };
 
@@ -121,8 +129,11 @@ statsApp
             margin: {
                 left: 100
             },
+            drawDots: false,
+            tension: 1,
+            lineMode: 'basis',
             series: [
-                { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt' },
+                { y: 'avg', color: 'blue', thickness: '2px', label: 'Min Watt', tension: 1 },
                 { y: 'max', color: 'red', thickness: '1px', label: 'Min Watt' },
                 { y: 'min', color: 'green', thickness: '1px', label: 'Min Watt' }
             ]
