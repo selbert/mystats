@@ -11,7 +11,7 @@ var dataMap = {
     totalAverage: {query:"SELECT AVG(avg)/100*540 AS avg FROM load", cache:{time: 0, data: 0}},
     averagePerDayOfWeek: {query:"SELECT strftime('%w', time) as dow, ROUND(AVG(avg)/100*540,2) as avg FROM load GROUP BY dow", cache:{time: 0, data: []}},
     averagePerHourOfDay: {query:"SELECT strftime('%H', time) as hod, ROUND(AVG(avg)/100*540,2) as avg FROM load GROUP BY hod", cache:{time: 0, data: []}},
-    averagePerDay: {query:"SELECT date(time) as date, ROUND(AVG(avg)/100*540,2) as avg FROM load GROUP BY date",cache:{time: 0, data: []}},
+    averagePerDay: {query:"SELECT date(time) as date, ROUND(AVG(avg)/100*540,2) as avg FROM load WHERE date(time) > date('now','-1 month') GROUP BY date",cache:{time: 0, data: []}},
     lastLoads: {query:"SELECT strftime('%s', time) as date, ROUND(avg/100*540,2) as avg, ROUND(max/100*540,2) as max, ROUND(min/100*540,2) as min FROM load ORDER BY id DESC LIMIT ?",cache:{time: 0, data: []}}
 };
 

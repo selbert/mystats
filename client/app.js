@@ -20,7 +20,7 @@ statsApp
             $http.get(url)
                 .then(
                    function(resp) {
-                      var data = resp.data.map(parseFn);
+                      var data = parseFn(resp.data);
                       console.log(data);
                       deferred.resolve(data);
                     },
@@ -29,51 +29,59 @@ statsApp
         };
 
        this.load = function() {
-            var parseObject = function(element,i) {
-                var newel = {
-                    date: parseInt(i-59),
-                    avg: parseFloat(element.avg),
-                    min: parseFloat(element.min),
-                    max: parseFloat(element.max)
-                };
-                return newel;
+            var parseObject = function(data) {
+                return data.map(function(element,i) {
+                    var newel = {
+                        date: parseInt(i-59),
+                        avg: parseFloat(element.avg),
+                        min: parseFloat(element.min),
+                        max: parseFloat(element.max)
+                    };
+                    return newel;
+                });
             };
             return getPromise(urlService.loadUrl, parseObject);
         };
 
         this.avgHourOfDay = function(callback) {
-            var parseObject = function(element) {
+            var parseObject = function(data) {
+                return data.map(function(element) {
                     return {
                         hod: parseInt(element.hod),
                         avg: parseFloat(element.avg)
-                    }
-                };
+                    };
+                });
+            };
             return getPromise(urlService.avgHourOfDayUrl, parseObject);
         };
         this.avg = function(callback) {
-            var parseObject = function(element) {
-                    return element;
-                };
+            var parseObject = function(data) {
+                return data;
+            };
             return getPromise(urlService.avgUrl, parseObject);
         };
 
         this.avgDayOfWeek = function(callback) {
-            var parseObject = function(element) {
+            var parseObject = function(data) {
+                return data.map(function(element) {
                     return {
                         dow: parseInt(element.dow),
                         avg: parseFloat(element.avg)
-                    }
-                };
+                    };
+                });
+            };
             return getPromise(urlService.avgDayOfWeekUrl, parseObject);
         };
 
         this.avgDay = function(callback) {
-            var parseObject = function(element) {
+            var parseObject = function(data) {
+                return data.map(function(element) {
                     return {
                         date: new Date(element.date),
                         avg: parseFloat(element.avg)
-                    }
-                };
+                    };
+               });
+            };
             return getPromise(urlService.avgDayUrl, parseObject);
         };
     }])
@@ -173,4 +181,11 @@ statsApp
             .then(function(data) {
                if (data) $scope.data = data;
             });
-        }]);
+        }])
+    .controller('mainCtrl', ['loadDataService', '$scope', function(loadDataService, $scope) {
+        $scope.totalAverage = 'loading...';
+        loadDataService.avg()
+            .then(function(data) {
+                $scope.totalAverage = data;
+            });
+    }]);

@@ -5,17 +5,27 @@
     <title>Thomas' Stats</title>
     <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
-<body>
+<body ng-controller="mainCtrl">
     <h1>My Stats!</h1>
+    <h2>General stats!</h2>
+    <ul>
+        <li>
+            Total average: {{totalAverage}} W
+        </li>
+    </ul>
+    <h2>Consumption for the last 60 minutes</h2>
     <div ng-controller="loadGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
+    <h2>Average daily consumption for the last month</h2>
     <div ng-controller="avgDayGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
+    <h2>Average consumption for each hour of the day</h2>
     <div ng-controller="avgHourOfDayGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
+    <h2>Average consumption for each day of the week</h2>
     <div ng-controller="avgDayOfWeekGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
