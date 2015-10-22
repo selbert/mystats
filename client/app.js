@@ -33,7 +33,6 @@ statsApp
        this.hourLoads = function() {
             var parseObject = function(data) {
                 return data.map(function(element,i) {
-                    console.log(element);
                     var newel = {
                         date: new Date(element.date),
                         avg: parseFloat(element.avg),
