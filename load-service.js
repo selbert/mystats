@@ -17,7 +17,8 @@ var dataMap = {
     monthConsumption: {query:"SELECT AVG(avg)/100*540*(strftime('%s','now','localtime') - strftime('%s',MIN(time)))/60/60 as monthConsumption FROM load WHERE date(time) >= date('now','localtime','start of month','localtime')",cache:{time: 0, data: []}},
     weekConsumption: {query:"SELECT AVG(avg)/100*540*(strftime('%s','now','localtime') - strftime('%s',MIN(time)))/60/60 as weekConsumption FROM load WHERE strftime('%Y-%W',time) = strftime('%Y-%W','now','localtime')",cache:{time: 0, data: []}},
     dayConsumption: {query:"SELECT AVG(avg)/100*540*(strftime('%s','now','localtime') - strftime('%s',MIN(time)))/60/60 as dayConsumption FROM load WHERE date(time) = date('now','localtime')",cache:{time: 0, data: []}},
-    lastLoads: {query:"SELECT strftime('%s', time) as date, ROUND(avg/100*540,2) as avg, ROUND(max/100*540,2) as max, ROUND(min/100*540,2) as min FROM load ORDER BY id DESC LIMIT ?",cache:{time: 0, data: []}}
+    hourLoads: {query:"SELECT strftime('%Y-%m-%dT%H:%M:00', time) as date, ROUND(avg/100*540,2) as avg, ROUND(max/100*540,2) as max, ROUND(min/100*540,2) as min FROM load WHERE datetime(time) >= datetime('now','localtime', '-1 hour')",cache:{time: 0, data: []}},
+    dayLoads: {query:"SELECT strftime('%Y-%m-%dT%H:00:00', time) as date, ROUND(AVG(avg)/100*540,2) as avg, ROUND(MAX(max)/100*540,2) as max, ROUND(MIN(min)/100*540,2) as min FROM load WHERE datetime(time) >= datetime('now', 'localtime', '-1 day') GROUP BY date",cache:{time: 0, data: []}}
 };
 
 var getCachedData = function(queryName) {
@@ -135,6 +136,10 @@ exports.getAveragePerDay = function() {
     return getMultiResultCached('averagePerDay');
 }
 
-exports.getLastLoads = function(amount) {
-    return getMultiResultCached('lastLoads', [ amount ]);
+exports.getHourLoads = function() {
+    return getMultiResultCached('hourLoads');
+}
+
+exports.getDayLoads = function() {
+    return getMultiResultCached('dayLoads');
 }

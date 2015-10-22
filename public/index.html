@@ -29,7 +29,10 @@
         </li>
     </ul>
     <h2>Consumption for the last 60 minutes</h2>
-    <div ng-controller="loadGraphCtrl">
+    <div ng-controller="hourLoadsGraphCtrl">
+        <linechart data="data" options="options" mode="" width="" height=""></linechart>
+    </div>
+    <div ng-controller="dayLoadsGraphCtrl">
         <linechart data="data" options="options" mode="" width="" height=""></linechart>
     </div>
     <h2>Average daily consumption for the last month</h2>

@@ -64,10 +64,18 @@ router.get('/avg/hourOfDay', function(req, res) {
         res.json({error:err})});
 });
 
-router.get('/loads/:amount', function(req, res) {
-  var amount = req.params.amount;
-  if (!amount || isNaN(amount)) amount = 1000;
-  loadService.getLastLoads(amount)
+router.get('/loads/hour', function(req, res) {
+  loadService.getHourLoads()
+    .then(
+      function(rows) {
+        res.json(rows)
+      },
+      function(err) {
+        res.json({error:err})});
+});
+
+router.get('/loads/day', function(req, res) {
+  loadService.getDayLoads()
     .then(
       function(rows) {
         res.json(rows)

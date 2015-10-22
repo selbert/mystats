@@ -8,7 +8,8 @@ statsApp
         this.totalBaseUrl = apiBaseUrl + '/total';
 
         this.loadBaseUrl = apiBaseUrl + '/loads';
-        this.loadUrl = this.loadBaseUrl + '/60';
+        this.hourLoadsUrl = this.loadBaseUrl + '/hour';
+        this.dayLoadsUrl = this.loadBaseUrl + '/day';
 
         this.avgUrl = apiBaseUrl + '/avg';
         this.avgHourOfDayUrl = this.avgUrl + '/hourOfDay';
@@ -29,11 +30,12 @@ statsApp
             return deferred.promise;
         };
 
-       this.load = function() {
+       this.hourLoads = function() {
             var parseObject = function(data) {
-                return data.reverse().map(function(element,i) {
+                return data.map(function(element,i) {
+                    console.log(element);
                     var newel = {
-                        date: new Date(element.date*1000),
+                        date: new Date(element.date),
                         avg: parseFloat(element.avg),
                         min: parseFloat(element.min),
                         max: parseFloat(element.max)
@@ -41,7 +43,22 @@ statsApp
                     return newel;
                 });
             };
-            return getPromise(urlService.loadUrl, parseObject);
+            return getPromise(urlService.hourLoadsUrl, parseObject);
+        };
+
+        this.dayLoads = function() {
+            var parseObject = function(data) {
+                return data.map(function(element,i) {
+                    var newel = {
+                        date: new Date(element.date),
+                        avg: parseFloat(element.avg),
+                        min: parseFloat(element.min),
+                        max: parseFloat(element.max)
+                    };
+                    return newel;
+                });
+            };
+            return getPromise(urlService.dayLoadsUrl, parseObject);
         };
 
         this.avgHourOfDay = function(callback) {
@@ -138,7 +155,7 @@ statsApp
             ]
         };
 
-        this.load = {
+        this.loads = {
             axes: {
                 x: { key: 'date', type: 'date' }
             },
@@ -155,15 +172,24 @@ statsApp
             ]
         };
     })
-    .controller('loadGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
-            $scope.options = loadOptionsService.load;
-            $scope.data = [];
-            loadDataService.load()
-                .then(function(data) {
-                    $scope.data = data;
-                });
+    .controller('hourLoadsGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
+        $scope.options = loadOptionsService.loads;
+        $scope.data = [];
+        loadDataService.hourLoads()
+            .then(function(data) {
+                $scope.data = data;
+            });
 
         }])
+    .controller('dayLoadsGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
+          $scope.options = loadOptionsService.loads;
+          $scope.data = [];
+          loadDataService.dayLoads()
+              .then(function(data) {
+                  $scope.data = data;
+              });
+
+    }])
     .controller('avgHourOfDayGraphCtrl', ['loadDataService', 'loadOptionsService', '$scope', function(loadDataService,loadOptionsService, $scope) {
            $scope.options = loadOptionsService.avgHourOfDay;
            $scope.data = [];
